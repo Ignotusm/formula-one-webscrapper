@@ -13,9 +13,10 @@ class formulaRaceWeek:
         self.events.append(event)
 
     def printRaceWeek(self):
-        print(str(self.name))
+        print(self.name)
         for event in self.events:
             event.printEvent()
+
 
 # class for f1 events
 
@@ -49,12 +50,11 @@ def getTimeLine(link):
     if page.status_code != 200:
         page = requests.get("https://www.formula1.com{}".format(link))
         soup = BeautifulSoup(page.content, "html.parser")
-        h1 = soup.find("h1")
-        print(type(h1.text))
-        print()
-        print("No official data yet")
+        name = soup.find("h2", class_="f1--s")
+        print(json.dumps(race.__dict__))
         print()
         return
+
     soup = BeautifulSoup(page.content, "html.parser")
     f1 = soup.find_all("td")
 
@@ -73,19 +73,19 @@ def getTimeLine(link):
                 name = f1[i+1].text.strip("\n")
                 time = f1[i+2].text.strip("\n")
                 event = formulaEvent(date, name, time)
-                race.addEvent(event)
+                race.addEvent(json.dumps(event.__dict__))
             if "Qualifying" in f1[(i+1)].text:
                 name = f1[i+1].text.strip("\n")
                 time = f1[i+2].text.strip("\n")
                 event = formulaEvent(date, name, time)
-                race.addEvent(event)
+                race.addEvent(json.dumps(event.__dict__))
             if "Grand Prix" in f1[(i+1)].text:
                 name = f1[i+1].text.strip("\n")
                 time = f1[i+2].text.strip("\n")
                 event = formulaEvent(date, name, time)
-                race.addEvent(event)
+                race.addEvent(json.dumps(event.__dict__))
 
-    race.printRaceWeek()
+    print(json.dumps(race.__dict__))
     print()
 
 
