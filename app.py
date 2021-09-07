@@ -51,9 +51,7 @@ def getTimeLine(link):
         page = requests.get("https://www.formula1.com{}".format(link))
         soup = BeautifulSoup(page.content, "html.parser")
         name = soup.find("h2", class_="f1--s")
-        print(json.dumps(race.__dict__))
-        print()
-        return
+        return json.dumps(race.__dict__)
 
     soup = BeautifulSoup(page.content, "html.parser")
     f1 = soup.find_all("td")
@@ -85,16 +83,18 @@ def getTimeLine(link):
                 event = formulaEvent(date, name, time)
                 race.addEvent(json.dumps(event.__dict__))
 
-    print(json.dumps(race.__dict__))
-    print()
+    return json.dumps(race.__dict__)
 
 
 URL = "https://www.formula1.com/en/racing/2021.html"
 page = requests.get(URL)
 soup = BeautifulSoup(page.content, "html.parser")
-h1 = soup.find("h1")
-print(h1.text)
+raceWeek = []
 
 races = soup.find_all("a", class_="event-item-wrapper event-item-link")
 for i in races:
-    getTimeLine(i["href"])
+    raceWeek.append(getTimeLine(i["href"]))
+
+f = open("races.txt", "w")
+f.write(json.dumps(raceWeek, ensure_ascii=False))
+f.close()
